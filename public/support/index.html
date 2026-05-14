@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IronMan - Equipo de Apoyo</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!--
+    Header principal del dashboard.
+    Muestra el titulo del sistema, el indicador de conexion
+    con el servidor y la hora actual del sistema.
+  -->
+  <header id="support-header">
+    <div class="header-left">
+      <div id="connection-status" class="status-dot disconnected"></div>
+      <h1>IRONMAN SYSTEM</h1>
+      <span class="header-subtitle">Panel de Equipo de Apoyo</span>
+    </div>
+    <div class="header-right">
+      <span id="system-time">--:--:--</span>
+    </div>
+  </header>
+
+  <main>
+
+    <!--
+      Columna izquierda: estado global del sistema.
+      Contiene tres tarjetas: estado general, etapa activa
+      y metricas biometricas del atleta.
+    -->
+    <aside id="status-column">
+
+      <!--
+        Tarjeta de estado general del sistema.
+        Cambia de color segun el estado: ok / warning / emergency.
+        En emergencia ocupa mas espacio visual para llamar la atencion.
+      -->
+      <div class="card" id="system-status-card">
+        <h2>Estado del sistema</h2>
+        <div id="system-status-display" class="status-display ok">
+          <span id="system-status-label">NORMAL</span>
+        </div>
+      </div>
+
+      <!--
+        Tarjeta de etapa activa.
+        Muestra cual de las tres etapas del Ironman esta en curso:
+        Natacion, Ciclismo o Carrera.
+      -->
+      <div class="card" id="stage-card">
+        <h2>Etapa activa</h2>
+        <p class="stage-card-hint">Pulsa una etapa para actualizar el sistema (atleta y dron).</p>
+        <div class="stage-indicators">
+
+          <!--
+            Cada indicador de etapa tiene un punto de color
+            y el nombre de la etapa. Solo uno estara activo
+            en cada momento.
+          -->
+          <div class="stage-indicator" data-stage="swimming">
+            <div class="stage-dot"></div>
+            <span>Natacion</span>
+          </div>
+          <div class="stage-indicator active" data-stage="cycling">
+            <div class="stage-dot"></div>
+            <span>Ciclismo</span>
+          </div>
+          <div class="stage-indicator" data-stage="running">
+            <div class="stage-dot"></div>
+            <span>Carrera</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!--
+        Tarjeta de metricas biometricas del atleta.
+        Muestra la frecuencia cardiaca actual y su clasificacion
+        textual. Se actualiza en tiempo real con cada evento
+        del atleta.
+      -->
+      <div class="card" id="biometrics-card">
+        <h2>Biometria del atleta</h2>
+
+        <div class="metric">
+          <span class="metric-label">Frecuencia cardiaca</span>
+          <div class="metric-value-row">
+            <span id="hr-value" class="metric-value ok">--</span>
+            <span class="metric-unit">bpm</span>
+          </div>
+          <div id="hr-bar-container">
+            <!--
+              Barra de progreso visual de la FC.
+              El rango va de 40 a 220 bpm.
+              El color cambia segun el umbral alcanzado.
+            -->
+            <div id="hr-bar"></div>
+          </div>
+          <span id="hr-classification">Esperando datos...</span>
+        </div>
+
+      </div>
+
+      <!--
+        Tarjeta de ultimo evento recibido.
+        Destaca el evento mas reciente para que el equipo
+        pueda reaccionar sin necesidad de leer el log completo.
+      -->
+      <div class="card" id="last-event-card">
+        <h2>Ultimo evento</h2>
+        <div id="last-event-content">
+          <span id="last-event-time" class="event-time">--:--:--</span>
+          <span id="last-event-message">Sin eventos</span>
+        </div>
+      </div>
+
+    </aside>
+
+    <!--
+      Columna derecha: registro de eventos en tiempo real.
+      Muestra todos los eventos ordenados del mas reciente
+      al mas antiguo con su tipo, hora y descripcion.
+    -->
+    <section id="log-column">
+
+      <div class="log-header">
+        <h2>Registro de eventos</h2>
+        <button id="btn-clear-log" class="btn-secondary">Limpiar</button>
+      </div>
+
+      <!--
+        Contenedor del log. Los eventos se insertan al principio
+        para que el mas reciente siempre aparezca arriba.
+        Tiene scroll independiente del resto de la pagina.
+      -->
+      <div id="event-log">
+        <div class="log-empty">Esperando eventos del sistema...</div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/socket-client.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

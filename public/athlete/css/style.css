@@ -1,0 +1,338 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-bg:        #0a0a0a;
+  --color-surface:   #1a1a2e;
+  --color-surface-2: #16213e;
+  --color-accent:    #f97316;
+  --color-ok:        #22c55e;
+  --color-warning:   #f59e0b;
+  --color-emergency: #ef4444;
+  --color-text:      #f1f5f9;
+  --color-muted:     #94a3b8;
+  --color-border:    #334155;
+  --radius:          12px;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
+  padding-bottom: 3rem;
+}
+
+/* ── Header ────────────────────────────────────────────────── */
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+header h1 {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.status-dot.connected    { background: var(--color-ok); }
+.status-dot.disconnected { background: var(--color-emergency); }
+
+.system-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.system-badge.ok        { background: var(--color-ok);        color: #000; }
+.system-badge.warning   { background: var(--color-warning);   color: #000; }
+.system-badge.emergency {
+  background: var(--color-emergency);
+  color: #fff;
+  animation: pulse 0.8s ease-in-out infinite;
+}
+
+/* ── Layout principal ──────────────────────────────────────── */
+
+main {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+section {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+section h2 {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin-bottom: 1rem;
+}
+
+.hint {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  margin-top: 0.5rem;
+}
+
+/* ── Selector de etapa ─────────────────────────────────────── */
+
+.stage-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.stage-btn {
+  padding: 0.85rem 0.5rem;
+  background: var(--color-surface-2);
+  color: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.stage-btn.active {
+  background: var(--color-accent);
+  color: #fff;
+  border-color: var(--color-accent);
+}
+
+/* ── Monitor de frecuencia cardiaca ────────────────────────── */
+
+#hr-display {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+#hr-value {
+  font-size: 4.5rem;
+  font-weight: 800;
+  line-height: 1;
+  transition: color 0.3s;
+}
+
+#hr-value.ok        { color: var(--color-ok); }
+#hr-value.warning   { color: var(--color-warning); }
+#hr-value.emergency {
+  color: var(--color-emergency);
+  animation: pulse 0.5s ease-in-out infinite;
+}
+
+.hr-unit {
+  font-size: 1rem;
+  color: var(--color-muted);
+}
+
+#hr-status {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin-bottom: 1rem;
+}
+
+.hr-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.hr-controls button {
+  padding: 0.65rem 0.25rem;
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: inherit;
+}
+
+.hr-controls button:active { background: var(--color-border); }
+
+#btn-hr-critical {
+  background: #2a0000;
+  border-color: var(--color-emergency);
+  color: var(--color-emergency);
+}
+
+/* ── Botones de accion primaria ────────────────────────────── */
+
+#actions-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.btn-sos {
+  padding: 2.25rem 1rem;
+  background: var(--color-emergency);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  font-family: inherit;
+}
+
+.btn-sos:active { opacity: 0.75; }
+
+.btn-ok {
+  padding: 2.25rem 1rem;
+  background: var(--color-ok);
+  color: #000;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  font-family: inherit;
+}
+
+.btn-ok:active { opacity: 0.75; }
+
+/* ── Boton secundario (voz, sensores) ──────────────────────── */
+
+.btn-secondary {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  margin-bottom: 0.75rem;
+}
+
+.btn-secondary.active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+/* ── Feedback de voz ───────────────────────────────────────── */
+
+.voice-feedback {
+  background: var(--color-surface-2);
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+#voice-listening {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  margin-bottom: 0.25rem;
+}
+
+#voice-transcript {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+/* ── Sensores de movimiento ────────────────────────────────── */
+
+#fall-detection-status {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+#fall-detection-status.active { color: var(--color-ok); }
+#fall-detection-status.alert  { color: var(--color-emergency); }
+
+/* ── Estado del gesto ──────────────────────────────────────── */
+
+#gesture-status {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  background: var(--color-surface-2);
+  border-radius: 8px;
+  padding: 0.75rem;
+  text-align: center;
+  margin-top: 0.75rem;
+}
+
+/* ── Toast de notificacion ─────────────────────────────────── */
+
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9rem;
+  z-index: 100;
+  max-width: 90vw;
+  text-align: center;
+  animation: slide-up 0.3s ease;
+}
+
+.toast.info      { border-color: var(--color-accent);    color: var(--color-accent); }
+.toast.ok        { border-color: var(--color-ok);        color: var(--color-ok); }
+.toast.warning   { border-color: var(--color-warning);   color: var(--color-warning); }
+.toast.emergency { border-color: var(--color-emergency); color: var(--color-emergency); }
+
+/* ── Animaciones ───────────────────────────────────────────── */
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+@keyframes slide-up {
+  from { transform: translateX(-50%) translateY(16px); opacity: 0; }
+  to   { transform: translateX(-50%) translateY(0);    opacity: 1; }
+}
+
+.hidden { display: none !important; }

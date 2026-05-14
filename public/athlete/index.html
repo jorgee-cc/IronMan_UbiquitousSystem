@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>IronMan - Atleta</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header>
+    <div id="connection-status" class="status-dot disconnected"></div>
+    <h1>IRONMAN SYSTEM</h1>
+    <div id="system-status" class="system-badge ok">OK</div>
+  </header>
+
+  <main>
+
+    <section id="stage-section">
+      <h2>Etapa activa</h2>
+      <div class="stage-buttons">
+        <button class="stage-btn" data-stage="swimming">Natacion</button>
+        <button class="stage-btn active" data-stage="cycling">Ciclismo</button>
+        <button class="stage-btn" data-stage="running">Carrera</button>
+      </div>
+    </section>
+
+    <section id="biometrics-section">
+      <h2>Frecuencia cardiaca</h2>
+      <div id="hr-display">
+        <span id="hr-value" class="ok">120</span>
+        <span class="hr-unit">bpm</span>
+      </div>
+      <div id="hr-status">Normal</div>
+      <div class="hr-controls">
+        <button id="btn-hr-up">+ 5 bpm</button>
+        <button id="btn-hr-down">- 5 bpm</button>
+        <button id="btn-hr-critical">Simular critico</button>
+      </div>
+    </section>
+
+    <div id="actions-section">
+      <button id="btn-sos" class="btn-sos">SOS</button>
+      <button id="btn-ok" class="btn-ok">ESTOY BIEN</button>
+    </div>
+
+    <section id="voice-section">
+      <h2>Control por voz</h2>
+      <button id="btn-voice-toggle" class="btn-secondary">Activar microfono</button>
+      <div id="voice-feedback" class="voice-feedback hidden">
+        <span id="voice-listening">Escuchando...</span>
+        <span id="voice-transcript"></span>
+      </div>
+      <p class="hint">Comandos: "agua", "ayuda", "ok", "cancelar"</p>
+    </section>
+
+    <section id="motion-section">
+      <h2>Sensores de movimiento</h2>
+      <div id="motion-status">
+        <span id="fall-detection-status">Deteccion de caida: inactiva</span>
+      </div>
+      <button id="btn-motion-toggle" class="btn-secondary">Activar sensores</button>
+    </section>
+
+    <section id="gesture-section" class="hidden">
+      <h2>Gesto de cabeza (Ciclismo)</h2>
+      <p class="hint">Inclina el movil rapidamente a la derecha dos veces para activar SOS</p>
+      <div id="gesture-status">Esperando gesto...</div>
+    </section>
+
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/socket-client.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/biometrics.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/motion.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

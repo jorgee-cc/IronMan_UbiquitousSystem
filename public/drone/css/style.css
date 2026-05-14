@@ -1,0 +1,359 @@
+/* ── Reset y variables ─────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Paleta compartida con la vista del atleta */
+  --color-bg:        #0a0a0a;
+  --color-surface:   rgba(26, 26, 46, 0.85);  /* semitransparente sobre camara */
+  --color-accent:    #f97316;
+  --color-ok:        #22c55e;
+  --color-warning:   #f59e0b;
+  --color-emergency: #ef4444;
+  --color-text:      #f1f5f9;
+  --color-muted:     #94a3b8;
+  --color-border:    rgba(51, 65, 85, 0.7);
+  --radius:          12px;
+}
+
+/* ── Cuerpo: fondo negro para antes de activar la camara ───── */
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  overflow: hidden;        /* evita scroll en pantalla completa */
+  width: 100vw;
+  height: 100vh;
+}
+
+/* ── Capa 1: Feed de video ─────────────────────────────────── */
+
+#camera-feed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;       /* cubre toda la pantalla sin deformar */
+  z-index: 1;
+}
+
+/* ── Capa 2: Canvas de overlays ────────────────────────────── */
+
+#overlay-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;    /* no interfiere con los toques sobre la UI */
+}
+
+/* ── Capa 3: Header con estado del sistema ─────────────────── */
+
+#drone-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  backdrop-filter: blur(8px);  /* efecto cristal sobre el video */
+}
+
+#stage-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+/* ── Indicador de conexion ─────────────────────────────────── */
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.status-dot.connected    { background: var(--color-ok); }
+.status-dot.disconnected { background: var(--color-emergency); }
+
+/* ── Insignia de estado del sistema ────────────────────────── */
+
+.system-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.system-badge.ok        { background: var(--color-ok);      color: #000; }
+.system-badge.warning   { background: var(--color-warning);  color: #000; }
+.system-badge.emergency {
+  background: var(--color-emergency);
+  color: #fff;
+  animation: pulse 0.8s ease-in-out infinite;
+}
+
+/* ── Panel de datos biometricos (esquina inferior izquierda) ─ */
+
+#biometrics-panel {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 1rem;
+  z-index: 3;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.85rem 1.25rem;
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bio-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.bio-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  min-width: 3rem;
+}
+
+/* El valor de FC hereda el color segun el estado */
+#hr-value {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  transition: color 0.3s;
+}
+
+#hr-value.ok        { color: var(--color-ok); }
+#hr-value.warning   { color: var(--color-warning); }
+#hr-value.emergency {
+  color: var(--color-emergency);
+  animation: pulse 0.5s ease-in-out infinite;
+}
+
+.bio-unit {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+#athlete-status {
+  font-size: 0.85rem;
+  color: var(--color-text);
+}
+
+/* ── Panel de alerta central ───────────────────────────────── */
+
+#alert-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  background: rgba(239, 68, 68, 0.15);
+  border: 2px solid var(--color-emergency);
+  border-radius: var(--radius);
+  padding: 2rem 2.5rem;
+  text-align: center;
+  backdrop-filter: blur(12px);
+  animation: pulse-border 1s ease-in-out infinite;
+  min-width: 240px;
+}
+
+#alert-icon {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--color-emergency);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+#alert-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--color-emergency);
+  margin-bottom: 0.5rem;
+}
+
+#alert-message {
+  font-size: 0.85rem;
+  color: var(--color-text);
+}
+
+/* ── Panel de inicio (antes de activar la camara) ──────────── */
+
+#start-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;              /* encima de todo hasta que el usuario pulse */
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+#start-panel h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
+}
+
+#start-panel p {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  max-width: 260px;
+}
+
+#btn-start {
+  padding: 1rem 2.5rem;
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.2s;
+}
+
+#btn-start:active { opacity: 0.75; }
+
+/* ── Panel de deteccion de pose (esquina superior derecha) ─── */
+
+#pose-panel {
+  position: fixed;
+  top: 4.5rem;          /* debajo del header */
+  right: 1rem;
+  z-index: 3;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 160px;
+}
+
+#pose-status {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+#pose-status.active    { color: var(--color-ok); }
+#pose-status.detecting { color: var(--color-warning); }
+
+/* Contador regresivo que aparece cuando se detecta el brazo levantado */
+#gesture-countdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+#countdown-label {
+  font-size: 0.7rem;
+  color: var(--color-warning);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* El numero del contador es grande para verlo de lejos */
+#countdown-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-warning);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+/* ── Estado de deteccion facial ────────────────────────────── */
+
+#face-status {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+#face-status.active    { color: var(--color-ok); }
+#face-status.detecting { color: var(--color-warning); }
+
+/* Countdown del gesto de lengua, mismo estilo que el de brazo */
+#tongue-countdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+#tongue-label {
+  font-size: 0.7rem;
+  color: var(--color-warning);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+#tongue-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-warning);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+/* ── Animaciones ───────────────────────────────────────────── */
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* Hace parpadear el borde del panel de alerta */
+@keyframes pulse-border {
+  0%, 100% { border-color: var(--color-emergency); }
+  50%       { border-color: transparent; }
+}
+
+.hidden { display: none !important; }

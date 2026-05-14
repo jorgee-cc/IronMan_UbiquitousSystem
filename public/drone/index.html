@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>IronMan - Dron</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!--
+    Capa 1: Feed de camara.
+    MediaPipe lee los fotogramas directamente de este elemento.
+  -->
+  <video id="camera-feed" autoplay playsinline muted></video>
+
+  <!--
+    Capa 2: Canvas de overlays.
+    Pose dibuja aqui los landmarks del atleta.
+  -->
+  <canvas id="overlay-canvas"></canvas>
+
+  <header id="drone-header">
+    <div id="connection-status" class="status-dot disconnected"></div>
+    <span id="stage-label">Ciclismo</span>
+    <div id="system-status" class="system-badge ok">OK</div>
+  </header>
+
+  <div id="biometrics-panel">
+    <div class="bio-item">
+      <span class="bio-label">FC</span>
+      <span id="hr-value" class="ok">--</span>
+      <span class="bio-unit">bpm</span>
+    </div>
+    <div class="bio-item">
+      <span class="bio-label">ESTADO</span>
+      <span id="athlete-status">Normal</span>
+    </div>
+  </div>
+
+  <!--
+    Panel de deteccion: muestra el estado del modelo activo en cada momento.
+    Contiene elementos para pose y para el gesto de boca en ciclismo.
+    Solo uno de los dos bloques de estado estara visible segun la etapa.
+  -->
+  <div id="pose-panel">
+
+    <!--
+      Estado del modelo de pose (activo en natacion y carrera).
+      Se oculta cuando la etapa es ciclismo.
+    -->
+    <span id="pose-status">Pose: inactiva</span>
+
+    <!--
+      Estado del gesto de boca abierta (activo solo en ciclismo).
+      Oculto por defecto hasta que se cambia a la etapa de ciclismo.
+    -->
+    <span id="face-status" class="hidden">Boca: inactiva</span>
+
+    <!--
+      Countdown del gesto de brazo levantado (pose).
+      Aparece cuando MediaPipe detecta el brazo y cuenta atras 3s.
+    -->
+    <div id="gesture-countdown" class="hidden">
+      <span id="countdown-label">Brazo levantado</span>
+      <span id="countdown-value">3s</span>
+    </div>
+
+    <!--
+      Progreso del gesto de boca abierta en ciclismo.
+      FaceMesh detecta cuando los labios estan separados
+      y cuenta el tiempo hasta alcanzar los 2 segundos.
+    -->
+    <div id="blink-counter" class="hidden">
+      <span id="blink-label">Boca abierta</span>
+      <span id="blink-value">0.0 / 2.0s</span>
+    </div>
+
+  </div>
+
+  <div id="alert-panel" class="hidden">
+    <div id="alert-icon">!</div>
+    <div id="alert-title">ALERTA</div>
+    <div id="alert-message">Protocolo de emergencia activado</div>
+  </div>
+
+  <div id="start-panel">
+    <h1>VISTA DRON</h1>
+    <p>Pulsa para activar la camara y el sistema de deteccion</p>
+    <button id="btn-start">Iniciar camara</button>
+  </div>
+
+  <!--
+    MediaPipe Pose (modelo de cuerpo completo, usado en todas las etapas).
+    En natacion y carrera detecta el brazo levantado como gesto SOS.
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"
+          crossorigin="anonymous"></script>
+
+  <!--
+    MediaPipe FaceMesh (modelo facial, usado en ciclismo).
+    Detecta apertura de boca mediante el MAR (Mouth Aspect Ratio)
+    para solicitar agua sin usar las manos.
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"
+          crossorigin="anonymous"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
+          crossorigin="anonymous"></script>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/socket-client.js"></script>
+  <script src="js/camera.js"></script>
+  <script src="js/overlay.js"></script>
+  <script src="js/pose.js"></script>
+  <script src="js/face.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
